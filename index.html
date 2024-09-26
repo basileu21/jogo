@@ -3,155 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fortune Slots</title>
+    <title>Slot Machine</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #2c3e50;
-            position: relative;
-            overflow: hidden;
-            color: white;
-        }
-
-        .container {
-            text-align: center;
-            background: rgba(52, 73, 94, 0.8);
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            position: relative;
-            z-index: 1;
-        }
-
-        input {
-            margin: 10px 0;
-            padding: 10px;
-            width: 80%;
-        }
-
-        button {
-            padding: 10px 15px;
-            cursor: pointer;
-            background-color: #e67e22;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            margin: 5px;
-        }
-
-        button:hover {
-            background-color: #d35400;
-        }
-
+        /* Estilo básico da máquina de slots */
         #slot-machine {
             display: flex;
             justify-content: center;
-            margin: 20px 0;
+            margin-bottom: 20px;
         }
-
         .slot {
-            width: 80px;
-            height: 80px;
-            margin: 0 5px;
-            border: 2px solid #e67e22;
-            border-radius: 10px;
-            position: relative;
-            overflow: hidden;
-            background: #2980b9;
             font-size: 50px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin: 0 5px;
+            width: 60px;
+            text-align: center;
         }
-
-        .money-flying {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            animation: fly 1s forwards;
-            z-index: 2;
+        #spin-button, #auto-spin-button {
+            margin: 10px;
         }
-
-        @keyframes fly {
-            0% { transform: translateY(0) scale(0.5); }
-            100% { transform: translateY(-200px) scale(1); opacity: 0; }
-        }
-
         .win-message {
-            position: fixed;
-            top: 20%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 3em;
-            color: gold;
-            display: none;
-            z-index: 3;
-            animation: fadeIn 1s forwards;
-        }
-
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        .qr-code {
-            margin-top: 20px;
-        }
-
-        .qr-code img {
-            max-width: 200px;
-            height: auto;
+            font-size: 24px;
+            color: green;
+            text-align: center;
+            margin-top: 10px;
         }
     </style>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 </head>
 <body>
-    <div class="container">
-        <h1>Fortune Slots</h1>
-        <div id="register-section">
-            <h2>Cadastro</h2>
-            <input type="text" id="username" placeholder="Digite seu nome">
-            <button onclick="register()">Cadastrar</button>
-            <p id="message"></p>
-        </div>
-        <div id="game-section" style="display:none;">
-            <h2>Bem-vindo, <span id="user-display"></span>!</h2>
-            <p>Banca: R$<span id="bankroll">40</span></p>
-            <div>
-                <input type="number" id="deposit-amount" placeholder="Valor do Depósito" min="1">
-                <button onclick="deposit()">Depositar</button>
-                <input type="number" id="withdraw-amount" placeholder="Valor do Saque" min="1">
-                <button onclick="withdraw()">Sacar via PIX</button>
-            </div>
+    <div>
+        <h1>Jogo de Slot</h1>
+        <p>Banca: R$<span id="bankroll-display">40</span></p>
 
-            <!-- QR Code para depósito -->
-            <div class="qr-code">
-                <h3>Deposite via QR Code</h3>
-                <img src="images/frame" alt="QR Code para Depósito">
-            </div>
-
-            <div id="slot-machine">
-                <div class="slot" id="slot1"></div>
-                <div class="slot" id="slot2"></div>
-                <div class="slot" id="slot3"></div>
-                <div class="slot" id="slot4"></div>
-                <div class="slot" id="slot5"></div>
-                <div class="slot" id="slot6"></div>
-            </div>
-            <button id="spin-button" onclick="playSlot()">Girar</button>
-            <button id="auto-spin-button" onclick="startAutoSpin()">Rodadas Automáticas</button>
-            <div id="slot-result"></div>
+        <!-- Seção de depósito e saque -->
+        <div>
+            <button onclick="deposit()">Depositar</button>
+            <input type="number" id="withdraw-amount" placeholder="Valor do Saque" min="1">
+            <button onclick="withdraw()">Sacar via PIX</button>
         </div>
+
+        <!-- QR Code para depósito -->
+        <div class="qr-code">
+            <h3>Deposite via QR Code</h3>
+            <img src="images/frame" alt="QR Code para Depósito">
+        </div>
+
+        <!-- Máquina de slots -->
+        <div id="slot-machine">
+            <div class="slot" id="slot1"></div>
+            <div class="slot" id="slot2"></div>
+            <div class="slot" id="slot3"></div>
+        </div>
+        <button id="spin-button" onclick="playSlot()">Girar</button>
+        <button id="auto-spin-button" onclick="startAutoSpin()">Rodadas Automáticas</button>
+        <div id="slot-result"></div>
         <div class="win-message" id="win-message"></div>
     </div>
+
+    <!-- Áudio -->
     <audio id="win-sound" src="https://www.soundjay.com/button/sounds/button-3.mp3"></audio>
     <audio id="lose-sound" src="https://www.soundjay.com/button/sounds/button-7.mp3"></audio>
     <audio id="animal-sound" src="https://www.soundjay.com/animal/sounds/animal-1.mp3"></audio>
+
     <script>
         let bankroll = 40; // Inicializando a banca com R$40
-        let username = '';
         let autoSpinInterval = null;
-        let freeSpinCount = 0;
         let wins = 0;
 
         const symbols = [
@@ -166,7 +82,65 @@
             '🍍',  // Abacaxi
         ];
 
-        // Resto do código JavaScript permanece o mesmo
+        function playSlot() {
+            if (bankroll <= 0) {
+                alert("Saldo insuficiente para jogar!");
+                return;
+            }
+
+            // Gera três símbolos aleatórios
+            const slot1 = symbols[Math.floor(Math.random() * symbols.length)];
+            const slot2 = symbols[Math.floor(Math.random() * symbols.length)];
+            const slot3 = symbols[Math.floor(Math.random() * symbols.length)];
+
+            // Atualiza os elementos na página
+            document.getElementById('slot1').textContent = slot1;
+            document.getElementById('slot2').textContent = slot2;
+            document.getElementById('slot3').textContent = slot3;
+
+            // Verifica se houve vitória
+            if (slot1 === slot2 && slot2 === slot3) {
+                wins++;
+                bankroll += 10;
+                document.getElementById('win-message').textContent = "Você ganhou! +R$10";
+                document.getElementById('win-sound').play();
+            } else {
+                bankroll -= 5;
+                document.getElementById('win-message').textContent = "Você perdeu! -R$5";
+                document.getElementById('lose-sound').play();
+            }
+
+            // Atualiza o saldo na interface
+            document.getElementById('bankroll-display').textContent = bankroll;
+        }
+
+        function startAutoSpin() {
+            if (autoSpinInterval) {
+                clearInterval(autoSpinInterval);
+                autoSpinInterval = null;
+                document.getElementById('auto-spin-button').textContent = "Rodadas Automáticas";
+            } else {
+                autoSpinInterval = setInterval(playSlot, 2000);
+                document.getElementById('auto-spin-button').textContent = "Parar Automático";
+            }
+        }
+
+        function deposit() {
+            bankroll += 20; // Simula um depósito de R$20
+            document.getElementById('bankroll-display').textContent = bankroll;
+            alert("Depósito realizado com sucesso! +R$20");
+        }
+
+        function withdraw() {
+            const amount = parseInt(document.getElementById('withdraw-amount').value);
+            if (isNaN(amount) || amount <= 0 || amount > bankroll) {
+                alert("Valor de saque inválido!");
+                return;
+            }
+            bankroll -= amount;
+            document.getElementById('bankroll-display').textContent = bankroll;
+            alert("Saque realizado com sucesso via PIX! -" + amount);
+        }
     </script>
 </body>
 </html>
